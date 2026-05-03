@@ -1,4 +1,3 @@
-// src/components/content/ContactTerminal.jsx
 import React, { useState } from 'react'
 import gangstuna from '../../assets/gangstuna.png'
 
@@ -14,41 +13,31 @@ export const ContactTerminal = () => {
    }
 
    const handleSubmit = async (e) => {
-      e.preventDefault(); // Prevents page reload/closing
+      e.preventDefault();
       setStatus('loading');
-
       try {
          const response = await fetch('/api/contact', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
          });
-
          if (response.ok) {
             setStatus('success');
             setFormData({ name: '', email: '', message: '', isClient: false, projectType: 'Web App Development' });
-         } else {
-            setStatus('error');
-         }
-      } catch (error) {
-         setStatus('error');
-      }
+         } else { setStatus('error'); }
+      } catch { setStatus('error'); }
    }
 
    return (
       <div className="w-full h-full flex items-center justify-center p-4 font-mono">
          <div className="w-full max-w-[850px] flex flex-col md:flex-row gap-6 bg-black/80 border border-red-500/30 rounded-[2rem] p-8 backdrop-blur-xl relative overflow-hidden">
             <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(rgba(255,0,0,1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,0,0,1)_1px,transparent_1px)] bg-[size:30px_30px] pointer-events-none" />
-
-            {/* Left Side: Profile */}
             <div className="flex flex-col items-center w-full md:w-1/3">
                <img src={gangstuna} alt="Profile" className="w-24 h-24 rounded-full border-2 border-red-500/50 p-2 mb-4" />
                <h2 className="text-white font-black uppercase tracking-tighter">Mister<span className="text-red-500">Tuna</span></h2>
                <div className="w-full h-px bg-red-500/20 my-4" />
                <p className="text-red-400/70 text-[10px] uppercase text-center">System Architect</p>
             </div>
-
-            {/* Right Side: Form */}
             <div className="flex-1">
                {status === 'success' ? (
                   <div className="text-center py-10">
