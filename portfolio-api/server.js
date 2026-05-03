@@ -9,6 +9,7 @@ const secrets = require('oci-secrets');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// CORS restricted to your production domain
 app.use(cors({ origin: 'https://mistertuna.dev' }));
 app.use(express.json());
 
@@ -16,14 +17,14 @@ async function initializeServer() {
     try {
         console.log("Initializing OCI Instance Principal Provider...");
 
-        // Use the Async Builder - This is the fix for the getPassphrase error
+        // Build provider asynchronously to ensure internal methods are populated
         const provider = await new common.InstancePrincipalsAuthenticationDetailsProviderBuilder().build();
 
         const secretsClient = new secrets.SecretsClient({
             authenticationDetailsProvider: provider
         });
 
-        console.log("Fetching secret from Vault...");
+        console.log("Fetching credentials from Oracle Vault...");
         const secretResponse = await secretsClient.getSecretBundle({
             secretId: process.env.PASSWORD_SECRET_OCID
         });
@@ -31,21 +32,23 @@ async function initializeServer() {
         const base64Content = secretResponse.secretBundle.secretBundleContent.content;
         const ionosPassword = Buffer.from(base64Content, 'base64').toString('utf8');
 
+        // IONOS recommended settings: Port 587 with STARTTLS
         const transporter = nodemailer.createTransport({
             host: 'smtp.ionos.com',
             port: 587,
-            secure: false, // false for 587 (STARTTLS)
+            secure: false,
             auth: {
                 user: process.env.IONOS_EMAIL,
                 pass: ionosPassword
             },
             tls: {
-                // Helps prevent handshake failures on some Linux distributions
-                rejectUnauthorized: true
+                // Critical for reliability on some Linux environments
+                rejectUnauthorized: true,
+                minVersion: 'TLSv1.2'
             }
         });
 
-        // Test the transporter on boot
+        // Verify SMTP connection on startup
         await transporter.verify();
         console.log("SMTP Connection Verified.");
 
@@ -54,32 +57,36 @@ async function initializeServer() {
 
             try {
                 const info = await transporter.sendMail({
-                    // IONOS requirement: The 'from' MUST be exactly your authenticated email
+                    // RULE 1: 'from' MUST be exactly your IONOS email address
                     from: process.env.IONOS_EMAIL,
 
-                    // This allows you to see the sender's name and hit reply in your inbox
-                    replyTo: `"${name}" <${email}>`,
-
+                    // RULE 2: Use your external Gmail/Outlook here
                     to: process.env.RECEIVER_EMAIL,
-                    subject: `Portfolio Transmission: ${name}`,
+
+                    // RULE 3: Keep the subject simple and relevant
+                    subject: `Transmission from ${name}`,
+
+                    // RULE 4: Include a plain text version to avoid spam filters
+                    text: `New message from ${name} (${email})\nClient: ${isClient ? 'Yes' : 'No'}\nProject: ${projectType}\n\nMessage: ${message}`,
+
+                    // RULE 5: Keep HTML simple
                     html: `
                         <h3>New Contact Form Submission</h3>
-                        <p><strong>Sender:</strong> ${name} (${email})</p>
+                        <p><strong>Name:</strong> ${name}</p>
+                        <p><strong>Email:</strong> ${email}</p>
                         <p><strong>Prospective Client:</strong> ${isClient ? 'Yes' : 'No'}</p>
-                        <p><strong>Project Category:</strong> ${projectType}</p>
+                        <p><strong>Project Type:</strong> ${projectType}</p>
                         <hr/>
                         <p><strong>Message:</strong></p>
                         <p>${message.replace(/\n/g, '<br>')}</p>`
                 });
 
-                // Detailed success log for PM2
-                console.log("Email Accepted by IONOS:", info.messageId);
-                console.log("SMTP Response:", info.response);
+                console.log("Message accepted by IONOS:", info.messageId);
+                console.log("Full SMTP Response:", info.response);
 
                 res.status(200).json({ success: true });
             } catch (err) {
-                // Detailed error log for PM2
-                console.error("SMTP SEND ERROR:", err);
+                console.error("CRITICAL SMTP SEND ERROR:", err);
                 res.status(500).json({
                     error: "Failed to send email",
                     details: err.message
