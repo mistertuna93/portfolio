@@ -31,11 +31,11 @@ export const ContactTerminal = () => {
       try {
          // Point this to your Oracle Server IP / Domain
          // e.g., 'https://api.yourdomain.com/contact' or 'http://YOUR_ORACLE_IP:3001/api/contact'
-         const response = await fetch('http://localhost:3001/api/contact', {
+         const response = await fetch('/api/contact', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
-         })
+         });
 
          if (response.ok) {
             setStatus('success')
