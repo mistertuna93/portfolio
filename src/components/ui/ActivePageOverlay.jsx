@@ -34,11 +34,8 @@ export const ActivePageOverlay = () => {
   // Determine which page to show
   const effectivePageId = isUnderConstruction ? 'construction' : activePageId
 
-  // The overlay is active permanently if under construction, 
-  // otherwise it is active when a page is focused and zoomed.
   const isActive = isUnderConstruction || (view === 'ZOOMED' && activePageId !== null)
 
-  // Allow closing the overlay via the ESC key when normal site is active
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && !isUnderConstruction && isActive) {
@@ -61,22 +58,23 @@ export const ActivePageOverlay = () => {
         style={{ cursor: !isUnderConstruction ? 'pointer' : 'default' }}
       />
 
-      {/* Close Button - Now FIXED and visually styled to match the site's UI */}
+      {/* Close Button - Responsive Positioning */}
       {!isUnderConstruction && (
         <button
           onClick={resetView}
-          className="fixed top-6 right-6 md:top-10 md:right-10 flex items-center gap-2 px-4 py-2 bg-black/40 hover:bg-blue-600 border border-white/10 hover:border-blue-400 backdrop-blur-md rounded-lg text-gray-300 hover:text-white transition-all duration-300 shadow-2xl z-[102] cursor-pointer group"
+          className="fixed top-4 right-4 md:top-10 md:right-10 flex items-center gap-2 px-3 py-2 md:px-4 md:py-2 bg-black/40 hover:bg-blue-600 border border-white/10 hover:border-blue-400 backdrop-blur-md rounded-lg text-gray-300 hover:text-white transition-all duration-300 shadow-2xl z-[102] cursor-pointer group"
         >
           <span className="text-[9px] uppercase tracking-widest font-black mt-[1px]">
             Close
           </span>
-          <span className="text-[8px] bg-white/10 group-hover:bg-black/20 border border-white/5 px-1.5 py-0.5 rounded text-white/50 group-hover:text-white transition-colors font-bold tracking-wider">
+          <span className="hidden md:inline-block text-[8px] bg-white/10 group-hover:bg-black/20 border border-white/5 px-1.5 py-0.5 rounded text-white/50 group-hover:text-white transition-colors font-bold tracking-wider">
             ESC
           </span>
         </button>
       )}
-      <div className="w-[90vw] h-[85vh] max-w-[1800px] relative pointer-events-auto scale-100">
-        {/* Dynamic Content Renderer */}
+
+      {/* Responsive Overlay Canvas */}
+      <div className="w-[95vw] h-[92vh] md:w-[90vw] md:h-[85vh] max-w-[1800px] relative pointer-events-auto scale-100">
         <div className="w-full h-full overflow-hidden relative">
           {contentMap[effectivePageId] || <HomePage />}
         </div>
