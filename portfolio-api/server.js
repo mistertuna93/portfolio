@@ -33,11 +33,15 @@ async function initializeServer() {
 
         const transporter = nodemailer.createTransport({
             host: 'smtp.ionos.com',
-            port: 465,
-            secure: true,
+            port: 587,
+            secure: false, // false for 587 (STARTTLS)
             auth: {
                 user: process.env.IONOS_EMAIL,
                 pass: ionosPassword
+            },
+            tls: {
+                // Helps prevent handshake failures on some Linux distributions
+                rejectUnauthorized: true
             }
         });
 
@@ -47,24 +51,39 @@ async function initializeServer() {
 
         app.post('/api/contact', async (req, res) => {
             const { name, email, message, isClient, projectType } = req.body;
+
             try {
-                await transporter.sendMail({
-                    from: `"${name}" <${process.env.IONOS_EMAIL}>`,
-                    replyTo: email,
+                const info = await transporter.sendMail({
+                    // IONOS requirement: The 'from' MUST be exactly your authenticated email
+                    from: process.env.IONOS_EMAIL,
+
+                    // This allows you to see the sender's name and hit reply in your inbox
+                    replyTo: `"${name}" <${email}>`,
+
                     to: process.env.RECEIVER_EMAIL,
-                    subject: `New Transmission: ${name}`,
+                    subject: `Portfolio Transmission: ${name}`,
                     html: `
-                        <h3>Contact Form Submission</h3>
-                        <p><strong>Name:</strong> ${name}</p>
-                        <p><strong>Email:</strong> ${email}</p>
-                        <p><strong>Client:</strong> ${isClient ? 'Yes' : 'No'}</p>
-                        <p><strong>Project:</strong> ${projectType}</p>
-                        <hr/><p>${message}</p>`
+                        <h3>New Contact Form Submission</h3>
+                        <p><strong>Sender:</strong> ${name} (${email})</p>
+                        <p><strong>Prospective Client:</strong> ${isClient ? 'Yes' : 'No'}</p>
+                        <p><strong>Project Category:</strong> ${projectType}</p>
+                        <hr/>
+                        <p><strong>Message:</strong></p>
+                        <p>${message.replace(/\n/g, '<br>')}</p>`
                 });
+
+                // Detailed success log for PM2
+                console.log("Email Accepted by IONOS:", info.messageId);
+                console.log("SMTP Response:", info.response);
+
                 res.status(200).json({ success: true });
             } catch (err) {
-                console.error("Mail Error:", err);
-                res.status(500).json({ error: "Failed to send email" });
+                // Detailed error log for PM2
+                console.error("SMTP SEND ERROR:", err);
+                res.status(500).json({
+                    error: "Failed to send email",
+                    details: err.message
+                });
             }
         });
 
@@ -72,7 +91,6 @@ async function initializeServer() {
 
     } catch (err) {
         console.error("CRITICAL INITIALIZATION ERROR:", err);
-        // If it fails, keep retrying or check your IAM policies
         process.exit(1);
     }
 }
