@@ -173,6 +173,8 @@ export const usePortfolioStore = create((set, get) => ({
     triggerManualPan: (x, z) => set({ targetPan: { x, z } }),
     openHome: () => get().transitionToPage('home'), // Action for help button
 
+    setHoverPoint: (point) => set({ hoverPoint: point }),
+
     resetView: async () => {
         const state = get()
         if (state.isTransitioning || state.view === 'GRID') return
