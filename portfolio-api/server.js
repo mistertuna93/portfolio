@@ -57,28 +57,20 @@ async function initializeServer() {
 
             try {
                 const info = await transporter.sendMail({
-                    // RULE 1: 'from' MUST be exactly your IONOS email address
-                    from: process.env.IONOS_EMAIL,
+                    // 1. The 'from' header (what the user sees)
+                    from: `"${name}" <${process.env.IONOS_EMAIL}>`,
 
-                    // RULE 2: Use your external Gmail/Outlook here
+                    // 2. The 'envelope' (the actual sender IONOS checks for auth)
+                    envelope: {
+                        from: process.env.IONOS_EMAIL,
+                        to: process.env.RECEIVER_EMAIL
+                    },
+
                     to: process.env.RECEIVER_EMAIL,
-
-                    // RULE 3: Keep the subject simple and relevant
-                    subject: `Transmission from ${name}`,
-
-                    // RULE 4: Include a plain text version to avoid spam filters
-                    text: `New message from ${name} (${email})\nClient: ${isClient ? 'Yes' : 'No'}\nProject: ${projectType}\n\nMessage: ${message}`,
-
-                    // RULE 5: Keep HTML simple
-                    html: `
-                        <h3>New Contact Form Submission</h3>
-                        <p><strong>Name:</strong> ${name}</p>
-                        <p><strong>Email:</strong> ${email}</p>
-                        <p><strong>Prospective Client:</strong> ${isClient ? 'Yes' : 'No'}</p>
-                        <p><strong>Project Type:</strong> ${projectType}</p>
-                        <hr/>
-                        <p><strong>Message:</strong></p>
-                        <p>${message.replace(/\n/g, '<br>')}</p>`
+                    replyTo: email,
+                    subject: `Contact: ${name}`,
+                    text: `Message from ${name} (${email}): ${message}`,
+                    html: `<p><strong>Name:</strong> ${name}</p><p>${message}</p>`
                 });
 
                 console.log("Message accepted by IONOS:", info.messageId);
