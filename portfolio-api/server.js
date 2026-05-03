@@ -9,7 +9,6 @@ const secrets = require('oci-secrets');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// CORS restricted to your production domain
 app.use(cors({ origin: 'https://mistertuna.dev' }));
 app.use(express.json());
 
@@ -17,9 +16,7 @@ async function initializeServer() {
     try {
         console.log("Initializing OCI Instance Principal Provider...");
 
-        // Build provider asynchronously to ensure internal methods are populated
         const provider = await new common.InstancePrincipalsAuthenticationDetailsProviderBuilder().build();
-
         const secretsClient = new secrets.SecretsClient({
             authenticationDetailsProvider: provider
         });
@@ -30,52 +27,49 @@ async function initializeServer() {
         });
 
         const base64Content = secretResponse.secretBundle.secretBundleContent.content;
-        const ionosPassword = Buffer.from(base64Content, 'base64').toString('utf8');
+        // This is now your Gmail App Password
+        const vaultPassword = Buffer.from(base64Content, 'base64').toString('utf8');
 
-        // IONOS recommended settings: Port 587 with STARTTLS
+        // Nodemailer has a built-in Gmail preset, making this very clean
         const transporter = nodemailer.createTransport({
-            host: 'smtp.ionos.com',
-            port: 587,
-            secure: false,
+            service: 'gmail',
             auth: {
-                user: process.env.IONOS_EMAIL,
-                pass: ionosPassword
-            },
-            tls: {
-                // Critical for reliability on some Linux environments
-                rejectUnauthorized: true,
-                minVersion: 'TLSv1.2'
+                user: process.env.GMAIL_USER,
+                pass: vaultPassword
             }
         });
 
-        // Verify SMTP connection on startup
         await transporter.verify();
-        console.log("SMTP Connection Verified.");
+        console.log("SMTP Connection Verified with Gmail.");
 
         app.post('/api/contact', async (req, res) => {
             const { name, email, message, isClient, projectType } = req.body;
 
             try {
                 const info = await transporter.sendMail({
-                    // 1. The 'from' header (what the user sees)
-                    from: `"${name}" <${process.env.IONOS_EMAIL}>`,
+                    // Must be the Gmail account doing the sending
+                    from: process.env.GMAIL_USER,
 
-                    // 2. The 'envelope' (the actual sender IONOS checks for auth)
-                    envelope: {
-                        from: process.env.IONOS_EMAIL,
-                        to: process.env.RECEIVER_EMAIL
-                    },
-
+                    // Sending TO your professional IONOS email
                     to: process.env.RECEIVER_EMAIL,
-                    replyTo: email,
-                    subject: `Contact: ${name}`,
-                    text: `Message from ${name} (${email}): ${message}`,
-                    html: `<p><strong>Name:</strong> ${name}</p><p>${message}</p>`
+
+                    // So you can easily hit "Reply" in IONOS and talk to the user
+                    replyTo: `"${name}" <${email}>`,
+
+                    subject: `Portfolio Transmission: ${name}`,
+                    text: `New message from ${name} (${email})\nClient: ${isClient ? 'Yes' : 'No'}\nProject: ${projectType}\n\nMessage: ${message}`,
+                    html: `
+                        <h3>New Contact Form Submission</h3>
+                        <p><strong>Name:</strong> ${name}</p>
+                        <p><strong>Email:</strong> ${email}</p>
+                        <p><strong>Prospective Client:</strong> ${isClient ? 'Yes' : 'No'}</p>
+                        <p><strong>Project Type:</strong> ${projectType}</p>
+                        <hr/>
+                        <p><strong>Message:</strong></p>
+                        <p>${message.replace(/\n/g, '<br>')}</p>`
                 });
 
-                console.log("Message accepted by IONOS:", info.messageId);
-                console.log("Full SMTP Response:", info.response);
-
+                console.log("Message accepted by Gmail:", info.messageId);
                 res.status(200).json({ success: true });
             } catch (err) {
                 console.error("CRITICAL SMTP SEND ERROR:", err);
