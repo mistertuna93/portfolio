@@ -27,34 +27,41 @@ async function initializeServer() {
         });
 
         const base64Content = secretResponse.secretBundle.secretBundleContent.content;
-        // This is now your Gmail App Password
-        const vaultPassword = Buffer.from(base64Content, 'base64').toString('utf8');
+        const ionosPassword = Buffer.from(base64Content, 'base64').toString('utf8');
 
-        // Nodemailer has a built-in Gmail preset, making this very clean
+        // IONOS SMTP Configuration
         const transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: 'smtp.ionos.com',
+            port: 587,
+            secure: false, // Must be false for 587
             auth: {
-                user: process.env.GMAIL_USER,
-                pass: vaultPassword
+                user: process.env.IONOS_EMAIL,
+                pass: ionosPassword
+            },
+            tls: {
+                rejectUnauthorized: true
             }
         });
 
         await transporter.verify();
-        console.log("SMTP Connection Verified with Gmail.");
+        console.log("SMTP Connection Verified with IONOS.");
 
         app.post('/api/contact', async (req, res) => {
             const { name, email, message, isClient, projectType } = req.body;
 
             try {
                 const info = await transporter.sendMail({
-                    // Must be the Gmail account doing the sending
-                    from: process.env.GMAIL_USER,
+                    // What the user sees in the inbox
+                    from: `"${name} (Portfolio)" <${process.env.IONOS_EMAIL}>`,
 
-                    // Sending TO your professional IONOS email
+                    // The strict envelope to bypass IONOS outbound spam filters
+                    envelope: {
+                        from: process.env.IONOS_EMAIL,
+                        to: process.env.RECEIVER_EMAIL
+                    },
+
                     to: process.env.RECEIVER_EMAIL,
-
-                    // So you can easily hit "Reply" in IONOS and talk to the user
-                    replyTo: `"${name}" <${email}>`,
+                    replyTo: email,
 
                     subject: `Portfolio Transmission: ${name}`,
                     text: `New message from ${name} (${email})\nClient: ${isClient ? 'Yes' : 'No'}\nProject: ${projectType}\n\nMessage: ${message}`,
@@ -69,7 +76,7 @@ async function initializeServer() {
                         <p>${message.replace(/\n/g, '<br>')}</p>`
                 });
 
-                console.log("Message accepted by Gmail:", info.messageId);
+                console.log("Message accepted by IONOS:", info.messageId);
                 res.status(200).json({ success: true });
             } catch (err) {
                 console.error("CRITICAL SMTP SEND ERROR:", err);
