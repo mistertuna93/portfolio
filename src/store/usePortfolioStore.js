@@ -5,7 +5,7 @@ const defaultPages = [
     { id: 'bio', vCoord: new THREE.Vector2(0, 0) },
     { id: 'projects', vCoord: new THREE.Vector2(42, 18) },
     { id: 'roadmap', vCoord: new THREE.Vector2(25, 55) },
-    { id: 'arsenal', vCoord: new THREE.Vector2(-35, 38) },
+    { id: 'network', vCoord: new THREE.Vector2(-35, 38) },
     { id: 'contact', vCoord: new THREE.Vector2(-50, -15) }
 ]
 

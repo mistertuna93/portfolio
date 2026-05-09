@@ -8,7 +8,7 @@ import { HomePage } from '../content/HomePage'
 import { BioCard } from '../content/BioCard'
 import { ProjectsVault } from '../content/ProjectsVault'
 import { RoadmapTracker } from '../content/RoadmapTracker'
-import { ArsenalStack } from '../content/ArsenalStack'
+import { NetworkLinks } from '../content/ArsenalStack'
 import { ContactTerminal } from '../content/ContactTerminal'
 import { Construct } from '../content/Construct'
 
@@ -18,7 +18,7 @@ const contentMap = {
   bio: <BioCard />,
   projects: <ProjectsVault />,
   roadmap: <RoadmapTracker />,
-  arsenal: <ArsenalStack />,
+  network: <NetworkLinks />,
   contact: <ContactTerminal />,
   construction: <Construct />
 }

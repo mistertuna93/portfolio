@@ -1,31 +1,45 @@
 import React from 'react'
+import { ExternalLink, Terminal, Briefcase, Radio, Mail, FileText } from 'lucide-react'
 
-const techs = [
-  { name: 'React Three Fiber', category: 'WebGL' },
-  { name: 'Tailwind CSS v4', category: 'Styling' },
-  { name: 'Zustand', category: 'State' },
-  { name: 'GSAP', category: 'Animation' },
-  { name: 'Rust', category: 'Backend' },
-  { name: 'PostgreSQL', category: 'Database' },
+const links = [
+  { name: 'GitHub // Source', url: 'https://github.com/mistertuna93', icon: Terminal, color: 'hover:border-white hover:text-white hover:shadow-[0_0_15px_rgba(255,255,255,0.5)]' },
+  { name: 'LinkedIn // Professional', url: '#', icon: Briefcase, color: 'hover:border-blue-400 hover:text-blue-400 hover:shadow-[0_0_15px_rgba(96,165,250,0.5)]' },
+  { name: 'Encrypted Comms (Discord)', url: '#', icon: Radio, color: 'hover:border-indigo-400 hover:text-indigo-400 hover:shadow-[0_0_15px_rgba(129,140,248,0.5)]' },
+  { name: 'Architecture Logs (Blog)', url: '#', icon: FileText, color: 'hover:border-emerald-400 hover:text-emerald-400 hover:shadow-[0_0_15px_rgba(52,211,153,0.5)]' },
+  { name: 'Direct Email', url: 'mailto:your@email.com', icon: Mail, color: 'hover:border-red-400 hover:text-red-400 hover:shadow-[0_0_15px_rgba(248,113,113,0.5)]' },
 ]
 
-export const ArsenalStack = () => {
+export const NetworkLinks = () => {
   return (
-    <div className="flex flex-col h-full text-white">
-      <div className="mb-10 border-b border-white/20 pb-6">
-        <h1 className="text-7xl font-black uppercase tracking-tighter m-0 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-fuchsia-300">
-          Arsenal
+    <div className="flex flex-col h-full w-full max-w-2xl mx-auto text-white justify-center">
+      <div className="mb-10 text-center">
+        <h1 className="text-6xl font-black uppercase tracking-tighter m-0 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
+          Network
         </h1>
-        <p className="text-xl text-gray-400 font-mono mt-2">TECHNICAL_DEPENDENCIES_LOADED</p>
+        <p className="text-sm text-cyan-400 font-mono mt-2 tracking-widest uppercase">EXTERNAL_UPLINKS_AVAILABLE</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 h-full">
-        {techs.map((tech, i) => (
-          <div key={i} className="aspect-square bg-white/5 border border-white/10 rounded-[2rem] flex flex-col justify-center items-center hover:bg-white/10 hover:border-purple-500/50 transition-colors cursor-crosshair">
-            <span className="text-purple-400 font-mono text-xs mb-2 tracking-widest uppercase">{tech.category}</span>
-            <span className="text-xl font-bold text-center px-4">{tech.name}</span>
-          </div>
-        ))}
+      <div className="flex flex-col gap-4">
+        {links.map((link, i) => {
+          const Icon = link.icon
+          return (
+            <a
+              key={i}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`group flex items-center justify-between p-5 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl transition-all duration-300 ${link.color}`}
+            >
+              <div className="flex items-center gap-4">
+                <div className="p-2 bg-white/5 rounded-lg group-hover:bg-transparent transition-colors">
+                  <Icon size={24} />
+                </div>
+                <span className="font-mono text-lg font-bold tracking-wider uppercase">{link.name}</span>
+              </div>
+              <ExternalLink size={20} className="opacity-30 group-hover:opacity-100 transition-opacity" />
+            </a>
+          )
+        })}
       </div>
     </div>
   )

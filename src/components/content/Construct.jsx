@@ -17,14 +17,15 @@ export const Construct = () => {
     const triggerZoom = usePortfolioStore(state => state.triggerZoom)
     const [bottomHovered, setBottomHovered] = useState(false)
     const [textHovered, setTextHovered] = useState(false)
+    const [isCensoredHovered, setIsCensoredHovered] = useState(false)
 
     // Baseline width constraint applied to all three architectural wrappers
     const constraintStyles = { maxWidth: 'calc(100vh - 200px + 320px)' }
 
     return (
-        <div className="flex flex-col gap-4 md:gap-6 w-full h-full items-center justify-center animate-in fade-in duration-1000 p-6" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+        <div className="flex flex-col gap-4 md:gap-6 w-full h-full items-center justify-center animate-in fade-in duration-1000 p-6 relative" style={{ fontFamily: "'DM Sans', sans-serif" }}>
 
-            {/* Inject Custom Animation for the Marquee */}
+            {/* Custom Animations & Styles */}
             <style>{`
                 @keyframes marquee {
                     0% { transform: translateX(0); }
@@ -32,6 +33,58 @@ export const Construct = () => {
                 }
                 .animate-marquee {
                     animation: marquee 20s linear infinite;
+                }
+                @keyframes float-slight {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(-6px); }
+                }
+                .animate-float-slight {
+                    animation: float-slight 5s ease-in-out infinite;
+                }
+                @keyframes arrow-jab {
+                    0%, 100% { transform: translate(0, 0); }
+                    50% { transform: translate(0px, 6px); }
+                }
+                .animate-arrow {
+                    animation: arrow-jab 1.5s ease-in-out infinite;
+                }
+                
+                /* Pure Grayscale Solid Block TV Pixelation with Varied Transparency Overlays */
+                @keyframes censor-flicker {
+                    0% { background-position: 0 0, 23px 23px, -47px -47px, 31px 83px, -13px 113px, 53px -29px, 11px 41px, -17px 7px; }
+                    20% { background-position: -47px 23px, 0 83px, 23px -31px, -31px -47px, 113px 13px, -29px 53px, -41px -11px, 7px -17px; }
+                    40% { background-position: 83px -47px, -23px 23px, 0 47px, 47px 31px, -113px -13px, 29px -53px, 11px -41px, 17px 7px; }
+                    60% { background-position: -23px -83px, 47px 47px, -23px 23px, -47px -31px, 13px 113px, -53px 29px, 41px 11px, -7px 17px; }
+                    80% { background-position: 113px 31px, -83px 47px, 47px -23px, 23px 47px, -23px 0, 53px 53px, -11px 41px, 17px -7px; }
+                    100% { background-position: 0 0, 23px 23px, -47px -47px, 31px 83px, -13px 113px, 53px -29px, 11px 41px, -17px 7px; }
+                }
+                .bg-censor-blocks {
+                    /* Solid base to completely block the text underneath */
+                    background-color: #808080; 
+                    background-image:
+                        /* Big White blocks (Moderate transparency to blend with base) */
+                        conic-gradient(from 0deg at 20% 20%, rgba(255, 255, 255, 0.65) 90deg, transparent 0),
+                        /* Smaller Off-white blocks (Higher transparency for noise) */
+                        conic-gradient(from 0deg at 60% 60%, rgba(229, 229, 229, 0.4) 90deg, transparent 0),
+                        /* Black blocks (Deep layer, mostly solid) */
+                        conic-gradient(from 0deg at 75% 75%, rgba(0, 0, 0, 0.85) 90deg, transparent 0),
+                        /* Dark grey blocks (Mid transparency) */
+                        conic-gradient(from 0deg at 50% 50%, rgba(51, 51, 51, 0.5) 90deg, transparent 0),
+                        /* Light grey blocks (High transparency) */
+                        conic-gradient(from 0deg at 15% 85%, rgba(204, 204, 204, 0.35) 90deg, transparent 0),
+                        /* Off-black blocks (Semi-solid) */
+                        conic-gradient(from 0deg at 85% 15%, rgba(17, 17, 17, 0.7) 90deg, transparent 0),
+                        /* Micro white specks */
+                        conic-gradient(from 0deg at 35% 45%, rgba(255, 255, 255, 0.2) 90deg, transparent 0),
+                        /* Background shadows */
+                        conic-gradient(from 0deg at 10% 40%, rgba(0, 0, 0, 0.3) 90deg, transparent 0);
+                    
+                    /* 8 sets of prime numbers for chaotic optical blending */
+                    background-size: 89px 89px, 43px 43px, 61px 61px, 47px 47px, 73px 73px, 107px 107px, 137px 137px, 19px 19px;
+                    image-rendering: pixelated;
+                    animation: censor-flicker 1.2s steps(1) infinite;
+                    -webkit-mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0) 70%);
+                    mask-image: radial-gradient(circle at center, rgba(0,0,0,1) 30%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0) 70%);
                 }
             `}</style>
 
@@ -164,6 +217,45 @@ export const Construct = () => {
                             Contact
                         </button>
                     </div>
+                </div>
+            </div>
+
+            {/* FLOATING CENSORSHIP & CURVED ARROW CONTAINER */}
+            <div className="fixed right-2 bottom-16 md:right-8 md:bottom-24 z-50 pointer-events-none flex items-center justify-center w-64 h-64">
+
+                {/* The 45-degree Tilted Censorship Element */}
+                <div
+                    className="relative rotate-[45deg] animate-float-slight pointer-events-auto"
+                    onMouseEnter={() => setIsCensoredHovered(true)}
+                    onMouseLeave={() => setIsCensoredHovered(false)}
+                >
+                    {/* The Base Black Bar */}
+                    <div className="relative w-48 md:w-56 h-12 bg-black rounded-sm flex items-center justify-center border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.8)] cursor-help z-20 overflow-hidden">
+                        <span className="text-white font-mono text-[11px] md:text-sm font-bold uppercase tracking-[0.2em] z-10 whitespace-nowrap">
+                            Censored Preview!
+                        </span>
+                    </div>
+
+                    {/* The Oversized Solid Grayscale Pixelated Overlay Wrapper */}
+                    <div className={`absolute -inset-16 md:-inset-20 z-30 pointer-events-none transition-opacity duration-300 ${isCensoredHovered ? 'opacity-0' : 'opacity-100'}`}>
+                        <div className="w-full h-full bg-censor-blocks" />
+                    </div>
+                </div>
+
+                {/* Bold Red Graffiti Arrow - Y-coordinates raised by 50px to end cleanly above the gear button */}
+                <div className="absolute top-[40px] right-[-60px] md:top-[20px] md:right-[-110px] w-[200px] h-[300px] md:w-[280px] md:h-[360px] animate-arrow opacity-100 hover:scale-105 transition-transform z-10 pointer-events-none">
+                    <svg viewBox="0 0 300 350" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className="text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.6)] w-full h-full overflow-visible">
+                        {/* Smooth, wide bezier curve swinging far right before dropping (Shortened Y) */}
+                        <path d="M 30,50 C 150,50 250,150 270,280" strokeWidth="9" />
+
+                        {/* Arrowhead pointed straight down, shifted up 50px */}
+                        <path d="M 240,240 L 270,280 L 295,235" strokeWidth="9" />
+
+                        {/* Sketchy overlapping strokes, shifted up 50px */}
+                        <path d="M 26,46 C 146,46 246,146 266,276" strokeWidth="4" strokeOpacity="0.7" />
+                        <path d="M 34,54 C 154,54 254,154 274,284" strokeWidth="4" strokeOpacity="0.7" />
+                        <path d="M 236,236 L 266,276 L 291,231" strokeWidth="3" strokeOpacity="0.6" />
+                    </svg>
                 </div>
             </div>
 

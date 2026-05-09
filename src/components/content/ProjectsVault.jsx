@@ -1,163 +1,129 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { Terminal, Database, Cpu, Activity, ExternalLink, GitBranch } from 'lucide-react'
 
-const journeyLogs = [
+const engineeringProjects = [
    {
-      id: "LOG_01",
-      era: "The Spark",
-      title: "2D Animation & Graphic Design",
-      category: "CREATIVE_ROOTS",
-      description: "My entry into technology began through motion and visual storytelling. Mastering the fundamentals of 2D animation established a creative foundation that still influences my approach to UI/UX and complex system visualization.",
-      milestones: ["Middle School Animation Course", "Graphic Design Fundamentals", "Visual Composition"],
-      tech: ["Vector Tools", "Motion Suites", "Design Theory"],
-      color: "from-purple-500 to-pink-500",
-      cite: "ORIGIN_REF: MS_ARTS"
+      id: "PRJ_01",
+      title: "Menagerie",
+      type: "Federated Orchestrator",
+      status: "IN_DEVELOPMENT",
+      description: "A federated Kubernetes orchestrator featuring blockchain integration. Built with a custom pure-Rust TUI for cluster management and tokenomics visualization.",
+      stack: ["Rust", "Kubernetes", "SurrealDB", "TUI"],
+      icon: Terminal,
+      color: "group-hover:border-emerald-500/50 group-hover:shadow-[0_0_30px_rgba(16,185,129,0.15)]",
+      headerColor: "text-emerald-400",
+      link: "https://github.com/mistertuna93"
    },
    {
-      id: "LOG_02",
-      era: "The Intersection",
-      title: "Hardware Repair & Community Graphics",
-      category: "SYSTEMS_REPAIR",
-      description: "As my interest in gaming deepened, I moved from consumption to understanding the machines. I began documenting repair and modification methods, eventually providing the visual identity for a growing community of enthusiasts.",
-      milestones: ["Hardware Troubleshooting", "System Modification Guides", "Identity Design"],
-      tech: ["Hardware Diagnostics", "Firmware Logic", "Web Graphics"],
-      color: "from-blue-500 to-cyan-500",
-      cite: "SYSTEM_LOG: HW_MOD_01"
+      id: "PRJ_02",
+      title: "tarkOver",
+      type: "Game Telemetry Overlay",
+      status: "DEPLOYED",
+      description: "A highly optimized Rust-based overlay utility for tactical extraction shooters. Parses local logs in real-time to project coordinates and tracking data directly onto a mapped UI.",
+      stack: ["Rust", "Memory Mapping", "React", "Overlay UI"],
+      icon: Activity,
+      color: "group-hover:border-red-500/50 group-hover:shadow-[0_0_30px_rgba(239,68,68,0.15)]",
+      headerColor: "text-red-400",
+      link: "https://github.com/mistertuna93"
    },
    {
-      id: "LOG_03",
-      era: "The Expansion",
-      title: "Forum Architecture & App Development",
-      category: "COMMUNITY_ENGINEERING",
-      description: "The project evolved into a massive ecosystem involving a forum and YouTube channel. I specialized in jailbreaking/rooting ecosystems, developing custom applications and technical guides to democratize mobile technology access.",
-      milestones: ["Community Forum Management", "Jailbreak App Development", "Technical Education"],
-      tech: ["Root/Jailbreak Logic", "C-Style Languages", "Technical Documentation"],
-      color: "from-amber-400 to-orange-500",
-      cite: "ARCHIVE_REF: COMMUNITY_V3"
+      id: "PRJ_03",
+      title: "Ergo Architect",
+      type: "Hardware & Firmware",
+      status: "PROTOTYPING",
+      description: "Reverse-engineering and designing custom split and Alice-style mechanical keyboards. Utilizing Ergogen for physical PCB mapping and custom QMK/Vial firmware for layered macro configurations.",
+      stack: ["Ergogen", "QMK/Vial", "PCB Design", "Hardware"],
+      icon: Cpu,
+      color: "group-hover:border-blue-500/50 group-hover:shadow-[0_0_30px_rgba(59,130,246,0.15)]",
+      headerColor: "text-blue-400",
+      link: "https://github.com/mistertuna93"
    },
    {
-      id: "LOG_04",
-      era: "Physical Manifestation",
-      title: "CAD, CNC & Industrial Synthesis",
-      category: "PHYSICAL_ENGINEERING",
-      description: "I transitioned from digital bits to physical atoms, mastering CAD software for 3D printing and CNC processes. This expanded into PCB design and manufacture, allowing me to build totally custom hardware from the silicon up.",
-      milestones: ["CAD/CAM Engineering", "Custom PCB Manufacture", "Industrial Process Design"],
-      tech: ["SolidWorks/Fusion360", "KiCad", "CNC/3D-Printing"],
-      color: "from-red-500 to-orange-600",
-      cite: "HARDWARE_LOG: FAB_UNIT"
-   },
-   {
-      id: "LOG_05",
-      era: "The Horizon",
-      title: "Open Source Motion Systems",
-      category: "EMERGING_TECH",
-      description: "Synthesizing a lifetime of software, community, and hardware expertise, I am now focused on democratizing high-end engineering. Current aspirations include community-led 5-axis CNC systems and DIY 6DOF motion platforms.",
-      milestones: ["Open Source Project Lead", "5-Axis CNC Architecture", "6DOF Motion Research"],
-      tech: ["Motion Control Logic", "Kinematic Chains", "Community Collaboration"],
-      color: "from-emerald-400 to-teal-500",
-      cite: "FUTURE_REF: NEXUS_01"
+      id: "PRJ_04",
+      title: "6DoF Platform",
+      type: "Physical Simulation",
+      status: "R&D",
+      description: "Designing a 6-Degree-of-Freedom motion platform for immersive flight and racing simulation. Modeling complex kinematic chains and belt-driven linear actuators using T-slot extrusions via Onshape.",
+      stack: ["Kinematics", "Onshape", "Actuators", "ESP32"],
+      icon: Database,
+      color: "group-hover:border-purple-500/50 group-hover:shadow-[0_0_30px_rgba(168,85,247,0.15)]",
+      headerColor: "text-purple-400",
+      link: "https://github.com/mistertuna93"
    }
 ];
 
-const categories = ["FULL_CHRONICLE", ...new Set(journeyLogs.map(log => log.category))];
-
 export const ProjectsVault = () => {
-   const [activeCategory, setActiveCategory] = useState("FULL_CHRONICLE");
-
-   const filteredLogs = activeCategory === "FULL_CHRONICLE"
-      ? journeyLogs
-      : journeyLogs.filter(log => log.category === activeCategory);
-
    return (
       <div className="flex flex-col h-full text-white">
          {/* Header Section */}
-         <div className="mb-10 border-b border-white/10 pb-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-               <div>
-                  <h1 className="text-7xl font-black uppercase tracking-tighter m-0 bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-200">
-                     Chronicle
-                  </h1>
-                  <p className="text-lg text-emerald-400 font-mono mt-2 opacity-80 tracking-widest uppercase italic">
-                     {activeCategory === "FULL_CHRONICLE" ? "STORY_SEQUENCE_INITIALIZED" : `FILTERING_BY_${activeCategory}`}
-                  </p>
-               </div>
-
-               <div className="flex flex-wrap gap-2">
-                  {categories.map((cat) => (
-                     <button
-                        key={cat}
-                        onClick={() => setActiveCategory(cat)}
-                        className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border ${activeCategory === cat
-                              ? 'bg-emerald-500 text-black border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.4)]'
-                              : 'bg-white/5 text-emerald-400/60 border-white/10 hover:border-emerald-500/50 hover:text-emerald-400'
-                           }`}
-                     >
-                        {cat.replace('_', ' ')}
-                     </button>
-                  ))}
-               </div>
-            </div>
+         <div className="mb-10 border-b border-white/10 pb-6 shrink-0">
+            <h1 className="text-6xl lg:text-7xl font-black uppercase tracking-tighter m-0 bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-200">
+               Architecture
+            </h1>
+            <p className="text-lg text-emerald-400 font-mono mt-2 opacity-80 tracking-widest uppercase flex items-center gap-3">
+               <GitBranch size={18} />
+               ACTIVE_DEPLOYMENTS_AND_SYSTEMS
+            </p>
          </div>
 
-         {/* Story Timeline Grid */}
-         <div className="grid grid-cols-1 gap-12 h-full content-start overflow-y-auto no-scrollbar pb-20 pr-4">
-            {filteredLogs.map((log, index) => (
-               <div key={log.id} className="relative flex flex-col md:flex-row gap-8 group animate-in fade-in slide-in-from-bottom-4 duration-700">
-                  {/* Timeline Connector */}
-                  {index !== filteredLogs.length - 1 && activeCategory === "FULL_CHRONICLE" && (
-                     <div className="hidden md:block absolute left-[1.65rem] top-12 bottom-[-3rem] w-[1px] bg-gradient-to-b from-emerald-500/50 to-transparent"></div>
-                  )}
-
-                  {/* Marker */}
-                  <div className="relative z-10 flex-shrink-0">
-                     <div className="w-14 h-14 rounded-2xl bg-black border border-white/10 flex items-center justify-center group-hover:border-emerald-500/50 transition-colors duration-500">
-                        <span className="text-xs font-mono text-emerald-400 font-bold">{log.id.split('_')[1]}</span>
-                     </div>
-                  </div>
-
-                  {/* Content Card */}
-                  <div className="flex-grow p-8 rounded-[2rem] border border-white/10 bg-black/40 backdrop-blur-md relative overflow-hidden group-hover:border-white/20 transition-all duration-500">
-                     <div className={`absolute inset-0 bg-gradient-to-br ${log.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
-
-                     <div className="relative z-10">
-                        <div className="flex justify-between items-center mb-2">
-                           <span className="text-[10px] font-mono text-emerald-400/60 uppercase tracking-widest">{log.era}</span>
-                           <span className="text-[9px] font-mono text-white/30 uppercase tracking-[0.3em]">[{log.cite}]</span>
+         {/* Projects Grid */}
+         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full content-start overflow-y-auto no-scrollbar pb-20 pr-4">
+            {engineeringProjects.map((project) => {
+               const Icon = project.icon;
+               return (
+                  <div
+                     key={project.id}
+                     className={`group flex flex-col justify-between p-8 rounded-3xl border border-white/10 bg-black/40 backdrop-blur-md relative overflow-hidden transition-all duration-500 ${project.color}`}
+                  >
+                     {/* Top Section */}
+                     <div className="relative z-10 mb-6">
+                        <div className="flex justify-between items-start mb-4">
+                           <div className="p-3 bg-white/5 rounded-xl border border-white/10 group-hover:bg-black/50 transition-colors">
+                              <Icon size={24} className={project.headerColor} />
+                           </div>
+                           <div className="flex flex-col items-end">
+                              <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">{project.id}</span>
+                              <span className="text-[9px] font-mono px-2 py-0.5 mt-1 rounded-full bg-white/5 border border-white/10 text-white/60">
+                                 {project.status}
+                              </span>
+                           </div>
                         </div>
 
-                        <h3 className="text-4xl font-black mb-4 uppercase tracking-tighter text-white group-hover:text-emerald-400 transition-colors">
-                           {log.title}
+                        <h3 className={`text-3xl font-black mb-1 uppercase tracking-tight ${project.headerColor}`}>
+                           {project.title}
                         </h3>
-
-                        <p className="text-slate-400 font-mono text-sm leading-relaxed max-w-3xl mb-8 italic">
-                           "{log.description}"
+                        <p className="text-xs font-mono text-white/50 uppercase tracking-widest mb-4">
+                           {project.type}
                         </p>
 
-                        <div className="grid md:grid-cols-2 gap-8 border-t border-white/5 pt-6">
-                           <div>
-                              <h4 className="text-[10px] font-mono text-emerald-500/50 uppercase tracking-widest mb-3">Evolution_Path</h4>
-                              <ul className="space-y-2">
-                                 {log.milestones.map(m => (
-                                    <li key={m} className="text-xs text-white/70 flex items-center gap-2">
-                                       <span className="w-1 h-1 bg-emerald-500 rounded-full"></span> {m}
-                                    </li>
-                                 ))}
-                              </ul>
-                           </div>
-                           <div>
-                              <h4 className="text-[10px] font-mono text-emerald-500/50 uppercase tracking-widest mb-3">Arsenal_Used</h4>
-                              <div className="flex flex-wrap gap-2">
-                                 {log.tech.map(t => (
-                                    <span key={t} className="text-[10px] font-mono bg-white/5 px-2 py-1 rounded border border-white/5 text-emerald-200/60">
-                                       {t}
-                                    </span>
-                                 ))}
-                              </div>
-                           </div>
+                        <p className="text-slate-300 font-light text-sm leading-relaxed h-20 overflow-hidden">
+                           {project.description}
+                        </p>
+                     </div>
+
+                     {/* Bottom Section */}
+                     <div className="relative z-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div className="flex flex-wrap gap-2">
+                           {project.stack.map(tech => (
+                              <span key={tech} className="text-[10px] font-mono bg-white/5 px-2 py-1 rounded-md border border-white/5 text-white/70">
+                                 {tech}
+                              </span>
+                           ))}
                         </div>
+
+                        <a
+                           href={project.link}
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors shrink-0"
+                        >
+                           <span className="text-[10px] font-mono font-bold uppercase tracking-widest">Inspect</span>
+                           <ExternalLink size={14} />
+                        </a>
                      </div>
                   </div>
-               </div>
-            ))}
+               )
+            })}
          </div>
       </div>
    )
