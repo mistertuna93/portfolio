@@ -28,13 +28,20 @@ export const ActivePageOverlay = () => {
   const activePageId = usePortfolioStore((state) => state.activePageId)
   const resetView = usePortfolioStore((state) => state.resetView)
 
+  // Bring in our newly added global setting state
+  const isSettingsOpen = usePortfolioStore((state) => state.isSettingsOpen)
+
   // Feature flag to lock the app in Construction mode
   const isUnderConstruction = import.meta.env.VITE_UNDER_CONSTRUCTION === 'true'
 
   // Determine which page to show
   const effectivePageId = isUnderConstruction ? 'construction' : activePageId
 
+  // Determine if the full overlay container (blur included) is active
   const isActive = isUnderConstruction || (view === 'ZOOMED' && activePageId !== null)
+
+  // Determine if the interior UI content should be visible
+  const showContent = !(isUnderConstruction && isSettingsOpen)
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -74,7 +81,7 @@ export const ActivePageOverlay = () => {
       )}
 
       {/* Responsive Overlay Canvas */}
-      <div className="w-[95vw] h-[92vh] md:w-[90vw] md:h-[85vh] max-w-[1800px] relative pointer-events-auto scale-100">
+      <div className={`w-[95vw] h-[92vh] md:w-[90vw] md:h-[85vh] max-w-[1800px] relative transition-all duration-700 ${showContent ? 'scale-100 opacity-100 pointer-events-auto' : 'scale-95 opacity-0 pointer-events-none'}`}>
         <div className="w-full h-full overflow-hidden relative">
           {contentMap[effectivePageId] || <HomePage />}
         </div>

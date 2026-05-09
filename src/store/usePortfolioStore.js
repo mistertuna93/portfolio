@@ -144,6 +144,10 @@ export const usePortfolioStore = create((set, get) => ({
     targetZoom: null,
     targetPan: null,
 
+    // NEW: Global Settings Panel State
+    isSettingsOpen: false,
+    setSettingsOpen: (isOpen) => set({ isSettingsOpen: isOpen }),
+
     transitionToPage: async (id) => {
         const state = get()
         if (state.isTransitioning || (state.activePageId === id && state.view === 'ZOOMED')) return

@@ -4,7 +4,10 @@ import React, { useState } from 'react'
 import { usePortfolioStore, presets } from '../../store/usePortfolioStore'
 
 export const SettingsDashboard = () => {
-  const [isOpen, setIsOpen] = useState(false)
+  // Replace local state with global store state
+  const isOpen = usePortfolioStore((state) => state.isSettingsOpen)
+  const setIsOpen = usePortfolioStore((state) => state.setSettingsOpen)
+
   const [activeTab, setActiveTab] = useState('layout')
   const [presetName, setPresetName] = useState('')
 
