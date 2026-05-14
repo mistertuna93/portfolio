@@ -1,0 +1,30 @@
+name: Deploy Site on Push
+
+# This triggers the action automatically whenever code is pushed to the main branch
+on:
+  push:
+    branches:
+      - main  # Change this to 'master' if your default branch is named master
+
+jobs:
+  deploy-code:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute Remote SSH Commands
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/mistertuna.dev
+            
+            # Pull the latest code from GitHub
+            git pull origin main
+            
+            # Install dependencies and build the project
+            npm install
+            npm run build
+            
+            # (Optional) Restart your web server if needed
+            # sudo systemctl restart nginx

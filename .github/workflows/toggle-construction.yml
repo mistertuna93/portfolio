@@ -1,0 +1,35 @@
+name: Toggle Construction Mode
+
+# The workflow_dispatch event enables manual triggering via the UI or API
+on: 
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Under Construction? (true/false)'
+        required: true
+        type: boolean
+        default: true
+
+jobs:
+  update-server:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute Remote SSH Commands
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # Adjust the cd path to where your Vite website source lives
+          script: |
+            cd /var/www/mistertuna.dev
+            
+            # Find the VITE_UNDER_CONSTRUCTION line and replace its value with the input
+            sed -i 's/^VITE_UNDER_CONSTRUCTION=.*/VITE_UNDER_CONSTRUCTION=${{ inputs.mode }}/' .env
+            
+            # Install dependencies and build the project
+            npm install
+            npm run build
+            
+            # (Optional) Restart your web server if needed
+            # sudo systemctl restart nginx

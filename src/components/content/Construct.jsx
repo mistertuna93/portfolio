@@ -19,37 +19,19 @@ export const Construct = () => {
     const [textHovered, setTextHovered] = useState(false)
     const [isCensoredHovered, setIsCensoredHovered] = useState(false)
 
-    // Baseline width constraint applied to all three architectural wrappers
     const constraintStyles = { maxWidth: 'calc(100vh - 200px + 320px)' }
 
     return (
         <div className="flex flex-col gap-4 md:gap-6 w-full h-full items-center justify-center animate-in fade-in duration-1000 p-6 relative" style={{ fontFamily: "'DM Sans', sans-serif" }}>
 
-            {/* Custom Animations & Styles */}
             <style>{`
-                @keyframes marquee {
-                    0% { transform: translateX(0); }
-                    100% { transform: translateX(-50%); }
-                }
-                .animate-marquee {
-                    animation: marquee 20s linear infinite;
-                }
-                @keyframes float-slight {
-                    0%, 100% { transform: translateY(0); }
-                    50% { transform: translateY(-6px); }
-                }
-                .animate-float-slight {
-                    animation: float-slight 5s ease-in-out infinite;
-                }
-                @keyframes arrow-jab {
-                    0%, 100% { transform: translate(0, 0); }
-                    50% { transform: translate(0px, 6px); }
-                }
-                .animate-arrow {
-                    animation: arrow-jab 1.5s ease-in-out infinite;
-                }
+                @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+                .animate-marquee { animation: marquee 20s linear infinite; }
+                @keyframes float-slight { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+                .animate-float-slight { animation: float-slight 5s ease-in-out infinite; }
+                @keyframes arrow-jab { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(0px, 6px); } }
+                .animate-arrow { animation: arrow-jab 1.5s ease-in-out infinite; }
                 
-                /* Pure Grayscale Solid Block TV Pixelation with Varied Transparency Overlays */
                 @keyframes censor-flicker {
                     0% { background-position: 0 0, 23px 23px, -47px -47px, 31px 83px, -13px 113px, 53px -29px, 11px 41px, -17px 7px; }
                     20% { background-position: -47px 23px, 0 83px, 23px -31px, -31px -47px, 113px 13px, -29px 53px, -41px -11px, 7px -17px; }
@@ -59,27 +41,16 @@ export const Construct = () => {
                     100% { background-position: 0 0, 23px 23px, -47px -47px, 31px 83px, -13px 113px, 53px -29px, 11px 41px, -17px 7px; }
                 }
                 .bg-censor-blocks {
-                    /* Solid base to completely block the text underneath */
                     background-color: #808080; 
                     background-image:
-                        /* Big White blocks (Moderate transparency to blend with base) */
                         conic-gradient(from 0deg at 20% 20%, rgba(255, 255, 255, 0.65) 90deg, transparent 0),
-                        /* Smaller Off-white blocks (Higher transparency for noise) */
                         conic-gradient(from 0deg at 60% 60%, rgba(229, 229, 229, 0.4) 90deg, transparent 0),
-                        /* Black blocks (Deep layer, mostly solid) */
                         conic-gradient(from 0deg at 75% 75%, rgba(0, 0, 0, 0.85) 90deg, transparent 0),
-                        /* Dark grey blocks (Mid transparency) */
                         conic-gradient(from 0deg at 50% 50%, rgba(51, 51, 51, 0.5) 90deg, transparent 0),
-                        /* Light grey blocks (High transparency) */
                         conic-gradient(from 0deg at 15% 85%, rgba(204, 204, 204, 0.35) 90deg, transparent 0),
-                        /* Off-black blocks (Semi-solid) */
                         conic-gradient(from 0deg at 85% 15%, rgba(17, 17, 17, 0.7) 90deg, transparent 0),
-                        /* Micro white specks */
                         conic-gradient(from 0deg at 35% 45%, rgba(255, 255, 255, 0.2) 90deg, transparent 0),
-                        /* Background shadows */
                         conic-gradient(from 0deg at 10% 40%, rgba(0, 0, 0, 0.3) 90deg, transparent 0);
-                    
-                    /* 8 sets of prime numbers for chaotic optical blending */
                     background-size: 89px 89px, 43px 43px, 61px 61px, 47px 47px, 73px 73px, 107px 107px, 137px 137px, 19px 19px;
                     image-rendering: pixelated;
                     animation: censor-flicker 1.2s steps(1) infinite;
@@ -88,7 +59,7 @@ export const Construct = () => {
                 }
             `}</style>
 
-            {/* TOP TITLE BAR WRAPPER */}
+            {/* TOP TITLE BAR */}
             <div style={constraintStyles} className="w-full flex items-center justify-center shrink-0 z-20">
                 <div className="w-full bg-white/5 border border-white/10 rounded-[1.5rem] px-6 py-2 md:py-3 backdrop-blur-sm shadow-xl flex items-center justify-center relative overflow-hidden">
                     <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.012)_2px,rgba(255,255,255,0.012)_4px)] pointer-events-none" />
@@ -100,13 +71,12 @@ export const Construct = () => {
                 </div>
             </div>
 
-            {/* MIDDLE SECTION WRAPPER */}
+            {/* MIDDLE SECTION */}
             <div
                 style={constraintStyles}
                 className={`flex-1 flex flex-col md:flex-row gap-4 md:gap-8 items-center justify-center w-full min-h-0 transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] z-10 ${bottomHovered ? 'scale-95 opacity-50 blur-[1px]' : 'scale-100 opacity-100 blur-0'
                     }`}
             >
-                {/* 1. Image Responsive Container */}
                 <div
                     className={`flex justify-center md:justify-end w-full h-full max-h-[450px] transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] ${textHovered ? 'md:w-2/5' : 'md:w-3/5'
                         }`}
@@ -120,7 +90,6 @@ export const Construct = () => {
                     </div>
                 </div>
 
-                {/* 2. Text Responsive Container */}
                 <div
                     onMouseEnter={() => setTextHovered(true)}
                     onMouseLeave={() => setTextHovered(false)}
@@ -128,78 +97,44 @@ export const Construct = () => {
                         }`}
                 >
                     <div className="flex flex-col items-center text-center w-full max-w-lg transition-all duration-700 mx-auto">
-
-                        {/* Subsection A: Title & Status - Horizontal Line */}
                         <div className="flex flex-row items-end justify-between border-b border-white/5 pb-2 w-full">
                             <h2 style={{ fontFamily: "'Syne', sans-serif" }} className={`font-black text-white uppercase leading-none mb-[2px] transition-all duration-700 ${textHovered ? 'text-lg md:text-xl' : 'text-xl md:text-2xl'
-                                }`}>
-                                Under
-                            </h2>
-
+                                }`}>Under</h2>
                             <div className="flex flex-col items-center justify-center flex-1 transition-all duration-700 px-2">
                                 <div className={`text-blue-400 font-mono uppercase whitespace-nowrap transition-all duration-700 ${textHovered ? 'text-[7px] md:text-[8px] tracking-[0.1em]' : 'text-[8px] md:text-[9px] tracking-[0.15em] md:tracking-[0.2em]'
-                                    }`}>
-                                    Status: System Optimization
-                                </div>
+                                    }`}>Status: System Optimization</div>
                                 <div className={`text-red-500 font-mono uppercase animate-pulse whitespace-nowrap transition-all duration-700 mt-1 ${textHovered ? 'text-[7px] md:text-[8px] tracking-[0.1em]' : 'text-[8px] md:text-[9px] tracking-[0.15em] md:tracking-[0.2em]'
-                                    }`}>
-                                    deploy_init_v0.1.0
-                                </div>
+                                    }`}>deploy_init_v0.1.0</div>
                             </div>
                         </div>
-
-                        {/* Subsection B: Primary Header */}
                         <h2 style={{ fontFamily: "'Syne', sans-serif" }} className={`font-black uppercase leading-none text-blue-400 w-full text-left transition-all duration-700 ${textHovered ? 'text-xl md:text-2xl mb-2 mt-1' : 'text-2xl md:text-3xl mb-4 mt-2'
-                            }`}>
-                            Construction
-                        </h2>
-
-                        {/* Subsection C: Actual Content - Centered */}
+                            }`}>Construction</h2>
                         <div className="relative w-full flex flex-col items-center text-center">
-
                             <p className={`text-gray-300 font-light leading-relaxed transition-all duration-700 w-full ${textHovered ? 'text-[10px] md:text-xs' : 'text-xs md:text-sm'
+                                }`}>The hexagonal grid is currently being recalibrated.</p>
+                            <div className={`overflow-hidden transition-all w-full duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] flex flex-col items-center ${textHovered ? 'max-h-40 opacity-100 mt-2' : 'max-h-0 opacity-0 mt-0'
                                 }`}>
-                                The hexagonal grid is currently being recalibrated.
-                            </p>
-
-                            {/* Hidden detail string and secondary paragraph */}
-                            <div
-                                className={`overflow-hidden transition-all w-full duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] flex flex-col items-center ${textHovered ? 'max-h-40 opacity-100 mt-2' : 'max-h-0 opacity-0 mt-0'
-                                    }`}
-                            >
-                                <p className="text-[10px] md:text-xs text-gray-300 font-light leading-relaxed mb-2 transition-all duration-700 w-full">
-                                    High-performance digital environments and portfolio content will be accessible here shortly.
-                                </p>
-
-                                {/* Scrolling Marquee Row */}
+                                <p className="text-[10px] md:text-xs text-gray-300 font-light leading-relaxed mb-2 transition-all duration-700 w-full">High-performance digital environments and portfolio content will be accessible here shortly.</p>
                                 <div className="w-full overflow-hidden border-t border-b border-red-500/30 py-1.5 relative flex">
                                     <div className="flex w-max animate-marquee">
-                                        <span className="text-[9px] md:text-[10px] text-red-500 font-mono tracking-wide px-4 whitespace-nowrap">
-                                            Establishing direct connection to primary datastores... Compiling local React components... Awaiting final DNS propagation protocols...
-                                        </span>
-                                        <span className="text-[9px] md:text-[10px] text-red-500 font-mono tracking-wide px-4 whitespace-nowrap">
-                                            Establishing direct connection to primary datastores... Compiling local React components... Awaiting final DNS propagation protocols...
-                                        </span>
+                                        <span className="text-[9px] md:text-[10px] text-red-500 font-mono tracking-wide px-4 whitespace-nowrap">Establishing direct connection to primary datastores... Compiling local React components... Awaiting final DNS propagation protocols...</span>
+                                        <span className="text-[9px] md:text-[10px] text-red-500 font-mono tracking-wide px-4 whitespace-nowrap">Establishing direct connection to primary datastores... Compiling local React components... Awaiting final DNS propagation protocols...</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                         <div className={`w-full h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent transition-all duration-700 ${textHovered ? 'mt-3' : 'mt-4'
                             }`} />
                     </div>
                 </div>
             </div>
 
-            {/* BOTTOM BAR WRAPPER */}
+            {/* BOTTOM BAR */}
             <div className="h-[80px] w-full flex items-end justify-center shrink-0 z-20" style={constraintStyles}>
                 <div
                     onMouseEnter={() => setBottomHovered(true)}
                     onMouseLeave={() => setBottomHovered(false)}
-                    style={{
-                        height: bottomHovered ? '80px' : '32px',
-                        transition: 'height 0.4s cubic-bezier(0.4,0,0.2,1)'
-                    }}
+                    style={{ height: bottomHovered ? '80px' : '32px', transition: 'height 0.4s cubic-bezier(0.4,0,0.2,1)' }}
                     className="w-full bg-gradient-to-br from-blue-600/20 via-purple-900/20 to-black/40 border border-white/15 rounded-[1.5rem] px-8 shadow-2xl relative overflow-hidden flex items-center cursor-pointer"
                 >
                     <div style={{ opacity: bottomHovered ? 0 : 1, transition: 'opacity 0.2s ease' }} className="absolute inset-0 flex items-center justify-center">
@@ -210,52 +145,40 @@ export const Construct = () => {
                             <h2 className="text-sm font-black text-white leading-none">Ready to start?</h2>
                             <p className="text-[9px] text-blue-300/70 mt-1 uppercase tracking-tight">Inquire about architecture or engineering</p>
                         </div>
-                        <button
-                            onClick={() => triggerZoom('contact')}
-                            className="px-5 py-1.5 bg-white text-black font-black rounded-lg uppercase text-[9px] shadow-lg hover:bg-blue-500 hover:text-white transition-all"
-                        >
-                            Contact
-                        </button>
+                        <button onClick={() => triggerZoom('contact')} className="px-5 py-1.5 bg-white text-black font-black rounded-lg uppercase text-[9px] shadow-lg hover:bg-blue-500 hover:text-white transition-all">Contact</button>
                     </div>
                 </div>
             </div>
 
-            {/* FLOATING CENSORSHIP & CURVED ARROW CONTAINER */}
-            <div className="fixed right-2 bottom-16 md:right-8 md:bottom-24 z-50 pointer-events-none flex items-center justify-center w-64 h-64">
+            {/* FIXED WRAPPER FOR CENSOR & ARROW - This centers the group globally */}
+            <div className="fixed right-[5%] bottom-[15%] md:right-8 md:bottom-24 z-50 pointer-events-none flex items-center justify-center w-64 h-64 scale-75 md:scale-90 lg:scale-100">
+                {/* RELATIVE INNER CONTAINER - Preserves the original offset relationship */}
+                <div className="relative w-full h-full flex items-center justify-center">
 
-                {/* The 45-degree Tilted Censorship Element */}
-                <div
-                    className="relative rotate-[45deg] animate-float-slight pointer-events-auto"
-                    onMouseEnter={() => setIsCensoredHovered(true)}
-                    onMouseLeave={() => setIsCensoredHovered(false)}
-                >
-                    {/* The Base Black Bar */}
-                    <div className="relative w-48 md:w-56 h-12 bg-black rounded-sm flex items-center justify-center border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.8)] cursor-help z-20 overflow-hidden">
-                        <span className="text-white font-mono text-[11px] md:text-sm font-bold uppercase tracking-[0.2em] z-10 whitespace-nowrap">
-                            Censored Preview!
-                        </span>
+                    {/* The Tilted Censorship Element */}
+                    <div
+                        className="relative rotate-[45deg] animate-float-slight pointer-events-auto z-20"
+                        onMouseEnter={() => setIsCensoredHovered(true)}
+                        onMouseLeave={() => setIsCensoredHovered(false)}
+                    >
+                        <div className="relative w-48 md:w-56 h-12 bg-black rounded-sm flex items-center justify-center border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.8)] cursor-help overflow-hidden">
+                            <span className="text-white font-mono text-[11px] md:text-sm font-bold uppercase tracking-[0.2em] z-10 whitespace-nowrap">Censored Preview!</span>
+                        </div>
+                        <div className={`absolute -inset-16 md:-inset-20 z-30 pointer-events-none transition-opacity duration-300 ${isCensoredHovered ? 'opacity-0' : 'opacity-100'}`}>
+                            <div className="w-full h-full bg-censor-blocks" />
+                        </div>
                     </div>
 
-                    {/* The Oversized Solid Grayscale Pixelated Overlay Wrapper */}
-                    <div className={`absolute -inset-16 md:-inset-20 z-30 pointer-events-none transition-opacity duration-300 ${isCensoredHovered ? 'opacity-0' : 'opacity-100'}`}>
-                        <div className="w-full h-full bg-censor-blocks" />
+                    {/* Bold Red Graffiti Arrow - Preserving original negative offsets relative to the center */}
+                    <div className="absolute top-[40px] right-[-60px] md:top-[20px] md:right-[-110px] w-[200px] h-[300px] md:w-[280px] md:h-[360px] animate-arrow opacity-100 z-10 pointer-events-none">
+                        <svg viewBox="0 0 300 350" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className="text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.6)] w-full h-full overflow-visible">
+                            <path d="M 30,50 C 150,50 250,150 270,280" strokeWidth="9" />
+                            <path d="M 240,240 L 270,280 L 295,235" strokeWidth="9" />
+                            <path d="M 26,46 C 146,46 246,146 266,276" strokeWidth="4" strokeOpacity="0.7" />
+                            <path d="M 34,54 C 154,54 254,154 274,284" strokeWidth="4" strokeOpacity="0.7" />
+                            <path d="M 236,236 L 266,276 L 291,231" strokeWidth="3" strokeOpacity="0.6" />
+                        </svg>
                     </div>
-                </div>
-
-                {/* Bold Red Graffiti Arrow - Y-coordinates raised by 50px to end cleanly above the gear button */}
-                <div className="absolute top-[40px] right-[-60px] md:top-[20px] md:right-[-110px] w-[200px] h-[300px] md:w-[280px] md:h-[360px] animate-arrow opacity-100 hover:scale-105 transition-transform z-10 pointer-events-none">
-                    <svg viewBox="0 0 300 350" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" className="text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.6)] w-full h-full overflow-visible">
-                        {/* Smooth, wide bezier curve swinging far right before dropping (Shortened Y) */}
-                        <path d="M 30,50 C 150,50 250,150 270,280" strokeWidth="9" />
-
-                        {/* Arrowhead pointed straight down, shifted up 50px */}
-                        <path d="M 240,240 L 270,280 L 295,235" strokeWidth="9" />
-
-                        {/* Sketchy overlapping strokes, shifted up 50px */}
-                        <path d="M 26,46 C 146,46 246,146 266,276" strokeWidth="4" strokeOpacity="0.7" />
-                        <path d="M 34,54 C 154,54 254,154 274,284" strokeWidth="4" strokeOpacity="0.7" />
-                        <path d="M 236,236 L 266,276 L 291,231" strokeWidth="3" strokeOpacity="0.6" />
-                    </svg>
                 </div>
             </div>
 
