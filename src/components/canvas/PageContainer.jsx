@@ -20,7 +20,7 @@ export const PageContainer = ({ page }) => {
   const waveSpeed = usePortfolioStore((state) => state.waveSpeed)
   const waveFrequency = usePortfolioStore((state) => state.waveFrequency)
   const waveMagnitude = usePortfolioStore((state) => state.waveMagnitude)
-  const waveDirection = usePortfolioStore((state) => state.waveDirection) || new THREE.Vector2(1, 1)
+  const waveDirection = usePortfolioStore((state) => state.waveDirection) || { x: 1, y: 1 }
   const hexWidth = Math.sqrt(3) * r
 
   const modRow = ((page.vCoord.y % 2) + 2) % 2
@@ -44,8 +44,11 @@ export const PageContainer = ({ page }) => {
     if (!groupRef.current) return
     const elapsedTime = state.clock.elapsedTime
 
+    // FIX: Create a proper Vector2 from the plain state object
+    const waveDirVector = new THREE.Vector2(waveDirection.x, waveDirection.y).normalize()
+
     // Physical Hexagon Height Matrix Math
-    const proj = centerXZ.dot(waveDirection.clone().normalize())
+    const proj = centerXZ.dot(waveDirVector)
     const wave = Math.sin(proj * waveFrequency + elapsedTime * waveSpeed) * waveMagnitude
 
     // Inactive matrices MUST stay locked securely to the structural wave limits natively!
