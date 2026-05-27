@@ -15,14 +15,11 @@ export const Construct = () => {
     useEffect(() => { injectFonts() }, [])
 
     const triggerZoom = usePortfolioStore(state => state.triggerZoom)
-    const [bottomHovered, setBottomHovered] = useState(false)
     const [textHovered, setTextHovered] = useState(false)
     const [isCensoredHovered, setIsCensoredHovered] = useState(false)
 
-    const constraintStyles = { maxWidth: 'calc(100vh - 200px + 320px)' }
-
     return (
-        <div className="flex flex-col gap-4 md:gap-6 w-full h-full items-center justify-center animate-in fade-in duration-1000 p-6 relative" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+        <div className="flex flex-col gap-4 md:gap-6 w-full h-full items-center justify-center animate-in fade-in duration-1000 p-6 relative overflow-y-auto no-scrollbar" style={{ fontFamily: "'DM Sans', sans-serif" }}>
 
             <style>{`
                 @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
@@ -59,23 +56,9 @@ export const Construct = () => {
                 }
             `}</style>
 
-            {/* TOP TITLE BAR */}
-            <div style={constraintStyles} className="w-full flex items-center justify-center shrink-0 z-20">
-                <div className="w-full bg-white/5 border border-white/10 rounded-[1.5rem] px-6 py-2 md:py-3 backdrop-blur-sm shadow-xl flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(255,255,255,0.012)_2px,rgba(255,255,255,0.012)_4px)] pointer-events-none" />
-                    <div className="flex flex-col items-center relative z-10">
-                        <h1 style={{ fontFamily: "'Syne', sans-serif", letterSpacing: '0.04em' }} className="text-xl md:text-2xl font-extrabold text-white leading-none">
-                            mister<span className="text-blue-400">tuna</span><span className="font-light text-white/25" style={{ fontFamily: "'DM Mono', monospace", fontSize: '0.7em' }}>.dev</span>
-                        </h1>
-                    </div>
-                </div>
-            </div>
-
-            {/* MIDDLE SECTION */}
+            {/* MAIN CONTENT SECTION */}
             <div
-                style={constraintStyles}
-                className={`flex-1 flex flex-col md:flex-row gap-4 md:gap-8 items-center justify-center w-full min-h-0 transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] z-10 ${bottomHovered ? 'scale-95 opacity-50 blur-[1px]' : 'scale-100 opacity-100 blur-0'
-                    }`}
+                className={`flex-1 flex flex-col md:flex-row gap-4 md:gap-8 items-center justify-center w-full max-w-5xl mx-auto min-h-0 transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] z-10 scale-100 opacity-100 blur-0`}
             >
                 <div
                     className={`flex justify-center md:justify-end w-full h-full max-h-[450px] transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] ${textHovered ? 'md:w-2/5' : 'md:w-3/5'
@@ -129,29 +112,8 @@ export const Construct = () => {
                 </div>
             </div>
 
-            {/* BOTTOM BAR */}
-            <div className="h-[80px] w-full flex items-end justify-center shrink-0 z-20" style={constraintStyles}>
-                <div
-                    onMouseEnter={() => setBottomHovered(true)}
-                    onMouseLeave={() => setBottomHovered(false)}
-                    style={{ height: bottomHovered ? '80px' : '32px', transition: 'height 0.4s cubic-bezier(0.4,0,0.2,1)' }}
-                    className="w-full bg-gradient-to-br from-blue-600/20 via-purple-900/20 to-black/40 border border-white/15 rounded-[1.5rem] px-8 shadow-2xl relative overflow-hidden flex items-center cursor-pointer"
-                >
-                    <div style={{ opacity: bottomHovered ? 0 : 1, transition: 'opacity 0.2s ease' }} className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[9px] uppercase text-white/30 tracking-[0.25em] font-black">Looking to work with us?</span>
-                    </div>
-                    <div style={{ opacity: bottomHovered ? 1 : 0, transition: 'opacity 0.3s ease 0.1s' }} className="flex flex-row items-center justify-between w-full relative z-10">
-                        <div className="text-left">
-                            <h2 className="text-sm font-black text-white leading-none">Ready to start?</h2>
-                            <p className="text-[9px] text-blue-300/70 mt-1 uppercase tracking-tight">Inquire about architecture or engineering</p>
-                        </div>
-                        <button onClick={() => triggerZoom('contact')} className="px-5 py-1.5 bg-white text-black font-black rounded-lg uppercase text-[9px] shadow-lg hover:bg-blue-500 hover:text-white transition-all">Contact</button>
-                    </div>
-                </div>
-            </div>
-
             {/* FIXED WRAPPER FOR CENSOR & ARROW - This centers the group globally */}
-            <div className="fixed right-[5%] bottom-[15%] md:right-8 md:bottom-24 z-50 pointer-events-none flex items-center justify-center w-64 h-64 scale-75 md:scale-90 lg:scale-100">
+            <div className="fixed -right-16 bottom-16 md:-right-64 md:bottom-32 z-50 pointer-events-none flex items-center justify-center w-64 h-64 scale-75 md:scale-90 lg:scale-100">
                 {/* RELATIVE INNER CONTAINER - Preserves the original offset relationship */}
                 <div className="relative w-full h-full flex items-center justify-center">
 
