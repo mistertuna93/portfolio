@@ -113,7 +113,7 @@ export const ActivePageOverlay = () => {
         </div>
 
         {/* INNER CONTENT AREA */}
-        <div className="w-full flex-1 overflow-hidden relative rounded-[1.5rem] md:rounded-[2.5rem]">
+        <div className="w-full flex-1 min-h-0 overflow-hidden relative rounded-[1.5rem] md:rounded-[2.5rem]">
           {contentMap[effectivePageId] || <HomePage />}
         </div>
 
